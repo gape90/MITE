@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102b3a">
+  <title>De MITE nos llevamos | Grupo 19</title>
+  <style>
+    :root{color-scheme:dark;--ink:#f4f3e8;--muted:#b7c9c8;--sun:#ffd66e;--teal:#71d6c7;--night:#102b3a;--panel:#173b4b;--pink:#f6a9a0}
+    *{box-sizing:border-box} body{margin:0;background:#0c202c;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+    button{font:inherit;color:inherit;cursor:pointer} .wrap{max-width:1120px;margin:auto;padding:24px clamp(14px,4vw,40px) 32px}
+    header{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:16px}.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:750}.brand{color:var(--muted);font-size:.9rem}
+    h1{font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.1;margin:.25rem 0 .35rem;letter-spacing:-.035em}.intro{color:var(--muted);margin:0;max-width:68ch}
+    .game{position:relative;margin-top:22px;border:1px solid #315363;border-radius:24px;overflow:hidden;background:#163849;box-shadow:0 22px 70px #0005}
+    canvas{display:block;width:100%;height:auto;aspect-ratio:16/8;touch-action:none}
+    .hud{position:absolute;inset:16px 18px auto;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;text-shadow:0 2px 10px #071923}
+    .hud strong{display:block;font-size:.92rem}.hud small{color:#d6e4dd}.progress{width:min(30vw,240px);height:9px;border-radius:20px;background:#ffffff35;margin-top:8px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--sun);border-radius:inherit;transition:width .3s}
+    .overlay{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:#071923a8;backdrop-filter:blur(4px)}.overlay[hidden]{display:none}.dialog{width:min(570px,100%);padding:clamp(22px,4vw,34px);border:1px solid #487184;background:#102b3a;border-radius:22px;box-shadow:0 20px 70px #0007}.dialog .eyebrow{margin:0}.dialog h2{font-size:clamp(1.55rem,4vw,2.2rem);line-height:1.12;margin:8px 0 12px}.dialog p{color:#d2dfda;margin:0 0 14px}.dialog .quote{border-left:3px solid var(--sun);padding-left:14px;color:var(--ink)}
+    .crash-art{width:112px;height:76px;margin:0 auto 8px;filter:drop-shadow(0 5px 0 #8b4b3b);animation:pop .35s ease-out}.impact{color:#ffd66e!important;font-size:.8rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;text-align:center}
+    .town-sign{position:absolute;z-index:2;left:0;right:0;top:49%;transform:translateY(-50%);display:flex;justify-content:center;pointer-events:none;animation:signin .45s cubic-bezier(.2,.8,.2,1)}.town-sign[hidden]{display:none}.town-board{position:relative;max-width:90%;padding:15px clamp(20px,5vw,60px);border:4px solid #f7eac3;border-radius:14px;background:linear-gradient(135deg,#1e615c,#153d50);box-shadow:0 10px 0 #142e35,0 18px 36px #07192399;color:#fff7df;text-align:center}.town-board:before,.town-board:after{content:"";position:absolute;top:100%;height:56px;width:9px;background:linear-gradient(90deg,#73482f,#c38a53,#704329);z-index:-1}.town-board:before{left:16%}.town-board:after{right:16%}.town-board small{display:block;color:#f7d981;font-size:.72rem;font-weight:850;letter-spacing:.18em;text-transform:uppercase}.town-board strong{display:block;margin-top:2px;font-size:clamp(1.1rem,3.3vw,2rem);line-height:1.15}
+    @keyframes signin{from{transform:translate(-110%,-50%)}to{transform:translate(0,-50%)}}@keyframes pop{0%{transform:scale(.2) rotate(-20deg)}70%{transform:scale(1.2) rotate(8deg)}100%{transform:scale(1)}}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.primary,.secondary{border:0;border-radius:999px;padding:11px 18px;font-weight:750}.primary{background:var(--sun);color:#192d33}.primary:hover{background:#ffe49b}.secondary{background:#ffffff14;border:1px solid #ffffff38}.secondary:hover{background:#ffffff24}
+    .below{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-top:15px;color:var(--muted);font-size:.9rem}.key{display:inline-block;padding:1px 7px;border:1px solid #8199a0;border-radius:5px;color:var(--ink);font-size:.8rem}
+    .touch{display:none;gap:10px;justify-content:center;margin-top:12px}.touch button{width:58px;height:48px;border-radius:14px;border:1px solid #5c7c86;background:#173b4b;font-size:1.2rem}
+    footer{margin-top:25px;padding-top:18px;border-top:1px solid #27434e;color:var(--muted);font-size:.84rem} footer strong{color:var(--ink)}
+    @media(max-width:650px){.wrap{padding-top:16px}header{align-items:flex-start;flex-direction:column;gap:4px}.game{border-radius:16px}.hud{inset:9px 11px auto}.hud strong{font-size:.78rem}.hud small{font-size:.72rem}.progress{width:120px;height:7px}.below{display:block}.touch{display:flex}.overlay{padding:10px}.dialog{padding:20px;border-radius:17px}.dialog p{font-size:.93rem}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header><div><div class="eyebrow">Licenciatura en Tecnología Educativa · Grupo 19</div><h1>De MITE nos llevamos...</h1><p class="intro">Un viaje por los aprendizajes, las preguntas y los desafíos que nos acompañaron hasta el plan de tesina.</p></div><div class="brand">Metodología de la Investigación Tecnológica Educativa</div></header>
+    <section class="game" aria-label="Videojuego del recorrido de MITE">
+      <canvas id="scene" width="960" height="480" aria-label="Carretera con un auto que puedes mover y obstáculos para esquivar"></canvas>
+      <div class="hud"><div><strong id="stageLabel">Preparados para salir</strong><small id="stageHint">Grupo 19 · cuatro viajeros</small><div class="progress"><i id="bar"></i></div></div><strong id="counter">Jornada 0 / 6</strong></div>
+      <div class="town-sign" id="townSign" hidden><div class="town-board"><small>Bienvenidos al pueblo del conocimiento</small><strong id="townName">La búsqueda</strong></div></div>
+      <div class="overlay" id="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><p class="eyebrow" id="dialogKicker">Un viaje de MITE</p><svg id="crashArt" class="crash-art" hidden aria-hidden="true" viewBox="0 0 120 82"><path d="M59 3 69 22 90 11 84 33 110 31 91 47 108 63 83 60 79 80 61 64 44 80 41 59 15 66 30 47 7 34 34 33 29 11 49 23Z" fill="#ffce55" stroke="#c95447" stroke-width="4" stroke-linejoin="round"/><path d="M42 54h38l-5-12-8-7H53l-7 7Z" fill="#344d56" stroke="#f9f0d7" stroke-width="2"/><path d="M52 39h13l6 7H48Z" fill="#a8d7d2"/><circle cx="52" cy="56" r="5" fill="#17252b"/><circle cx="70" cy="56" r="5" fill="#17252b"/></svg><p class="impact" id="impactLabel" hidden>Frenamos un momento</p><h2 id="dialogTitle">¿Qué nos llevamos?</h2><p id="dialogBody">Abróchense los cinturones: el camino empieza con una pregunta amplia y termina con un plan de tesina en marcha.</p><p class="quote" id="dialogQuote">Con controles simples, esquiven las dudas del camino y deténganse en cada pueblo para recuperar lo aprendido.</p><div class="actions"><button class="primary" id="mainButton">Empezar el viaje</button><button class="secondary" id="restartButton" hidden>Volver a empezar</button></div></div></div>
+    </section>
+    <div class="below"><div><strong>Controles:</strong> <span class="key">←</span> <span class="key">→</span> para cambiar de carril y esquivar autos. <span class="key">Espacio</span> para saltar. También puedes usar A/D y los botones táctiles.</div><div>El viaje va despacio: cada parada nos deja pensar.</div></div>
+    <div class="touch" aria-label="Controles táctiles"><button id="leftBtn" aria-label="Mover a la izquierda">←</button><button id="jumpBtn" aria-label="Saltar">↑</button><button id="rightBtn" aria-label="Mover a la derecha">→</button></div>
+    <footer><strong>Grupo 19:</strong> María Alexandra Aguirre · Sabrina Buttini · Lautaro Gómez Cavolo · Gabriel Pellegrini<br>Gracias a Valeria Mikolaitis, Miguela Florentín, Nicolás Caliva Etcheberrigaray y Elena Julia Carlini.</footer>
+  </main>
+<script>
+(()=>{
+  const canvas=document.querySelector('#scene'),ctx=canvas.getContext('2d'),overlay=document.querySelector('#overlay');
+  const stages=[
+    {place:'Pueblo del punto de partida',title:'De un tema amplio a una pregunta',body:'Nuestro tema fue la inteligencia artificial aplicada al diseño instruccional para estudiantes neurodivergentes. El mayor desafío fue recortarlo hasta un problema que pudiéramos investigar.',quote:'El plan se enfoca en LumAI, en la E.E.S.O. N.º 421 de Firmat, durante el ciclo lectivo 2026.',color:'#f6a9a0'},
+    {place:'Pueblo de la búsqueda',title:'Buscar con método',body:'Aprendimos a elegir palabras clave, usar la búsqueda avanzada de Google Académico, revisar bibliografías y recorrer revistas recomendadas por la cátedra.',quote:'Priorizamos investigaciones recientes: la cátedra propone un máximo de cinco años y recomienda apuntar a tres.',color:'#ffd66e'},
+    {place:'Pueblo de los antecedentes',title:'Cada pieza cumple una función',body:'El estado del arte reúne y pone en diálogo lo que otras personas ya investigaron. Nos ayuda a reconocer qué se sabe y dónde puede haber una vacancia.',quote:'No se distingue del marco teórico por la antigüedad de las fuentes.',color:'#71d6c7'},
+    {place:'Pueblo del marco teórico',title:'Elegir desde dónde miramos',body:'El marco teórico expresa nuestras decisiones con la voz de los autores que elegimos. Para mirar nuestro problema, trabajamos con TPACK y DUA.',quote:'El duelo de rap de la Unidad IV nos ayudó a recordar la diferencia entre marco teórico y estado del arte.',color:'#b8a6ff'},
+    {place:'Pueblo de los objetivos',title:'Las palabras delimitan el alcance',body:'Diseñar no es implementar; desarrollar no es comprobar ni identificar. Aprendimos que el verbo de cada objetivo define qué nos proponemos hacer.',quote:'La tesina de la Licenciatura en Tecnología Educativa es investigación-acción: se planifica, se implementa y se reflexiona sobre la práctica.',color:'#88c9f0'},
+    {place:'Pueblo de los desafíos abiertos',title:'Un plan en marcha y preguntas por resolver',body:'Somos cuatro y la guía que revisamos habla de una tesina individual. Además, solo una persona del grupo accede a la escuela. Nos queda confirmar cómo organizarnos y repartir el trabajo de campo.',quote:'Proponemos aclarar desde la Unidad I si la tesina se realiza de manera grupal o individual. Nos llevamos un problema recortado, antecedentes buscados con método y un marco que dice desde dónde miramos.',color:'#ffb17e'}
+  ];
+  const bar=document.querySelector('#bar'),label=document.querySelector('#stageLabel'),counter=document.querySelector('#counter'),townSign=document.querySelector('#townSign');
+  const laneX=(lane,y)=>480+(lane-1)*(28+(y-280)*.57);
+  let running=false,paused=true,finished=false,tick=0,stage=0,lane=1,jump=0,obstacles=[],last=0,spawnClock=0,stageClock=0,pendingFinish=false,raf=0,signTimer=0;
+  function rr(x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+  function tree(x,y,s,shade){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#70513b';ctx.fillRect(-4,0,8,34);ctx.fillStyle=shade;ctx.beginPath();ctx.arc(0,-5,22,0,Math.PI*2);ctx.arc(-13,5,17,0,Math.PI*2);ctx.arc(13,6,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8ba96b';ctx.beginPath();ctx.arc(-6,-13,8,0,Math.PI*2);ctx.fill();ctx.restore()}
+  function car(x,y,s,color,front=false){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#07171d66';ctx.beginPath();ctx.ellipse(0,25,39,11,0,0,Math.PI*2);ctx.fill();
+    rr(-34,-4,9,24,3,'#17242a');rr(25,-4,9,24,3,'#17242a');
+    ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(-30,13);ctx.lineTo(-32,-4);ctx.lineTo(-23,-26);ctx.quadraticCurveTo(-20,-33,-11,-34);ctx.lineTo(11,-34);ctx.quadraticCurveTo(20,-33,23,-26);ctx.lineTo(32,-4);ctx.lineTo(30,13);ctx.quadraticCurveTo(0,20,-30,13);ctx.fill();
+    ctx.fillStyle='#ffe9ad';ctx.beginPath();ctx.moveTo(-22,-5);ctx.lineTo(-16,-25);ctx.quadraticCurveTo(0,-29,16,-25);ctx.lineTo(22,-5);ctx.quadraticCurveTo(0,-1,-22,-5);ctx.fill();
+    ctx.fillStyle='#89bbc0';ctx.beginPath();ctx.moveTo(-18,-7);ctx.lineTo(-13,-23);ctx.quadraticCurveTo(0,-26,13,-23);ctx.lineTo(18,-7);ctx.quadraticCurveTo(0,-5,-18,-7);ctx.fill();
+    ctx.strokeStyle='#ffffff8a';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-22,3);ctx.quadraticCurveTo(0,9,22,3);ctx.stroke();
+    if(front){rr(-25,1,11,5,2,'#fff1bd');rr(14,1,11,5,2,'#fff1bd');rr(-12,5,24,4,2,'#25353a')}else{rr(-25,2,12,6,2,'#ef6757');rr(13,2,12,6,2,'#ef6757');rr(-15,-3,30,4,2,'#e3bd73');
+      // Cuatro integrantes visibles en las ventanas
+      [-12,-4,4,12].forEach((dx,i)=>{ctx.fillStyle=['#704737','#342e40','#a65c48','#49372f'][i];ctx.beginPath();ctx.arc(dx,-16,4.1,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f0c09b';ctx.beginPath();ctx.arc(dx,-14,2.8,0,Math.PI*2);ctx.fill()})}
+    ctx.restore()}
+  function scenery(){const sky=ctx.createLinearGradient(0,0,0,300);sky.addColorStop(0,'#74b8c2');sky.addColorStop(.63,'#c8d9bb');sky.addColorStop(1,'#f3d69a');ctx.fillStyle=sky;ctx.fillRect(0,0,960,330);
+    ctx.fillStyle='#ffdda0';ctx.beginPath();ctx.arc(790,92,37,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff4cc38';ctx.beginPath();ctx.arc(790,92,53,0,Math.PI*2);ctx.fill();
+    // Colinas en capas para dar profundidad
+    [[300,'#789b80',[-30,325,90,225,190,300,325,209,440,300,590,205,700,300,830,217,990,312]],[322,'#52775f',[-20,340,100,260,215,330,360,230,485,328,620,238,765,330,885,245,1000,340]],[350,'#355c50',[-20,350,70,295,170,350,270,284,390,350,540,275,675,350,790,292,940,350]]].forEach(([base,col,pts])=>{ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(0,base);for(let i=0;i<pts.length;i+=2)ctx.lineTo(pts[i],pts[i+1]);ctx.lineTo(960,360);ctx.lineTo(0,360);ctx.closePath();ctx.fill()});
+    for(let i=0;i<13;i++){const x=(i*117+((tick*.23)%117))-90;tree(x,325+((i%3)*13),.52+(i%4)*.08,['#39755d','#477b5d','#568158'][i%3])}
+    // Asfalto con bordes y perspectiva
+    ctx.fillStyle='#d4c29c';ctx.beginPath();ctx.moveTo(437,300);ctx.lineTo(523,300);ctx.lineTo(905,480);ctx.lineTo(55,480);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#303f47';ctx.beginPath();ctx.moveTo(444,300);ctx.lineTo(516,300);ctx.lineTo(855,480);ctx.lineTo(105,480);ctx.closePath();ctx.fill();
+    // Reflejo suave y líneas de carril animadas lentamente
+    const shine=ctx.createLinearGradient(0,300,0,480);shine.addColorStop(0,'#ffffff04');shine.addColorStop(.55,'#ffffff0b');shine.addColorStop(1,'#ffffff00');ctx.fillStyle=shine;ctx.beginPath();ctx.moveTo(464,300);ctx.lineTo(496,300);ctx.lineTo(560,480);ctx.lineTo(400,480);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#f5e6bc';ctx.lineWidth=3;ctx.setLineDash([18,20]);ctx.lineDashOffset=-(tick*.8%38);ctx.beginPath();for(const offset of [-1,1]){ctx.moveTo(480+offset*15,302);ctx.lineTo(480+offset*125,480)}ctx.stroke();ctx.setLineDash([]);
+    // Postes reflectantes en las banquinas
+    for(let i=0;i<8;i++){const y=310+((i*31+tick*.8)%174),t=(y-300)/180,xL=440-335*t,xR=520+335*t,s=.28+t*.8;[xL,xR].forEach(x=>{rr(x-2*s,y,4*s,24*s,2,'#ead9ac');rr(x-2*s,y+2*s,4*s,4*s,1,'#f5b761')})}
+  }
+  function draw(){ctx.clearRect(0,0,960,480);scenery();
+    // Próximo pueblo aparece a la distancia como destino del viaje
+    const next=stages[Math.min(stage,stages.length-1)];const signX=755;rr(signX,190,157,47,7,'#f4e8c9');rr(signX+8,237,6,44,3,'#795333');ctx.fillStyle='#24454b';ctx.font='800 10px system-ui';ctx.textAlign='left';ctx.fillText('PRÓXIMO PUEBLO',signX+12,207);ctx.font='700 12px system-ui';ctx.fillText(next.place.replace('Pueblo del ','').replace('Pueblo de ','').slice(0,21),signX+12,226);
+    // Autos que representan las dificultades del recorrido
+    obstacles.forEach(o=>{const scale=.32+(o.y-280)/230*.57;const x=laneX(o.lane,o.y);car(x,o.y,scale,o.color,true);rr(x-48*scale,o.y-47*scale,96*scale,19*scale,7*scale,'#183a43');ctx.fillStyle='#fff5df';ctx.textAlign='center';ctx.font=`800 ${Math.max(9,12*scale)}px system-ui`;ctx.fillText(o.word,x,o.y-34*scale)});
+    const playerY=386-jump;const playerX=laneX(lane,playerY);car(playerX,playerY,.95,'#d7944e',false);
+    if(running&&!paused&&!finished){const now=performance.now(),dt=Math.min(40,now-last);last=now;const frame=dt/16.67;tick+=frame;stageClock+=dt;spawnClock+=dt;
+      if(spawnClock>2450&&obstacles.length<2){spawnClock=0;const wordSet=[['Miedo','Este aprendizaje nos mueve','#ca755f'],['Duda','Preguntar también es avanzar','#9882b5'],['Tema amplio','Recortar nos ayudó a enfocar','#c59d56'],['Incertidumbre','Investigar es aprender en camino','#628f8d'],['Poco tiempo','Paso a paso también se llega','#6784a6']];const entry=wordSet[Math.floor(Math.random()*wordSet.length)];obstacles.push({lane:Math.floor(Math.random()*3),y:288,word:entry[0],message:entry[1],color:entry[2]})}
+      obstacles.forEach(o=>o.y+=.72*frame);obstacles=obstacles.filter(o=>o.y<490);
+      const hit=obstacles.find(o=>o.lane===lane&&o.y>354&&o.y<405&&jump<36);if(hit){obstacles=obstacles.filter(o=>o!==hit);crash(hit);}
+      if(jump>0)jump=Math.max(0,jump-1.1*frame);
+      if(stageClock>14500){stageClock=0;arrive()}
+    }
+    requestAnimationFrame(draw)
+  }
+  function show({kicker,title,body,quote,button='Seguir el viaje',crashMode=false}){paused=true;document.querySelector('#dialogKicker').textContent=kicker;document.querySelector('#dialogTitle').textContent=title;document.querySelector('#dialogBody').textContent=body;document.querySelector('#dialogQuote').textContent=quote;document.querySelector('#crashArt').hidden=!crashMode;document.querySelector('#impactLabel').hidden=!crashMode;document.querySelector('#mainButton').hidden=false;document.querySelector('#restartButton').hidden=true;const b=document.querySelector('#mainButton');b.textContent=button;overlay.hidden=false}
+  function crash(o){const encouragement={Miedo:'Adelante: aprender algo nuevo puede dar miedo. Lo importante es reconocerlo, animarnos a enfrentarlo y seguir avanzando.',Duda:'Dudar también forma parte de investigar. Hacemos una pausa, volvemos a mirar las preguntas y seguimos con más claridad.','Tema amplio':'A veces el camino se abre en demasiadas direcciones. Recortar el tema nos ayudó a encontrar un problema posible y concreto.',Incertidumbre:'No tener todas las respuestas al empezar es parte de investigar. Podemos avanzar paso a paso, buscando y revisando nuestras decisiones.','Poco tiempo':'El recorrido es largo, pero cada avance cuenta. Organicemos las tareas y sigamos construyendo en equipo.'};
+    show({kicker:'¡Choque con '+o.word.toLowerCase()+'!',title:'Nos damos un respiro y seguimos',body:encouragement[o.word]||'A veces hay obstáculos en el camino. Respiremos, aprendamos de este momento y sigamos adelante.',quote:'El recorrido del Grupo 19 también tuvo desafíos: recortar el problema, organizarnos y decidir cómo llegar al campo.',button:'Seguir adelante',crashMode:true})}
+  function arrive(){if(stage>=stages.length){finish();return}const s=stages[stage];label.textContent=s.place;counter.textContent=`Parada ${stage+1} / ${stages.length}`;bar.style.width=`${stage/stages.length*100}%`;paused=true;document.querySelector('#townName').textContent=s.place.replace('Pueblo del ','').replace('Pueblo de ','');townSign.hidden=false;clearTimeout(signTimer);signTimer=setTimeout(()=>{townSign.hidden=true;show({kicker:`Parada ${stage+1} · ${s.place}`,title:s.title,body:s.body,quote:s.quote,button:stage===stages.length-1?'Ver cierre':'Continuar'})},1800);stage++;pendingFinish=stage===stages.length}
+  function finish(){finished=true;running=false;pendingFinish=false;bar.style.width='100%';counter.textContent='Viaje completo · 6 paradas';label.textContent='Llegamos con un plan en marcha';show({kicker:'Destino alcanzado · Grupo 19',title:'De MITE nos llevamos...',body:'Un problema bien recortado, antecedentes buscados con método y un marco teórico que dice desde dónde miramos.',quote:'Gracias a la cátedra por el acompañamiento. María Alexandra Aguirre, Sabrina Buttini, Lautaro Gómez Cavolo y Gabriel Pellegrini.',button:'Volver a empezar'});document.querySelector('#mainButton').hidden=true;document.querySelector('#restartButton').hidden=false}
+  function start(){overlay.hidden=true;townSign.hidden=true;if(finished)return;if(pendingFinish){finish();return}running=true;paused=false;last=performance.now()}
+  function reset(){clearTimeout(signTimer);running=false;paused=true;finished=false;tick=stage=lane=jump=spawnClock=stageClock=0;obstacles=[];pendingFinish=false;bar.style.width='0%';label.textContent='Preparados para salir';counter.textContent='Jornada 0 / 6';townSign.hidden=true;document.querySelector('#restartButton').hidden=true;show({kicker:'Un viaje de MITE',title:'¿Qué nos llevamos?',body:'Abróchense los cinturones: el camino empieza con una pregunta amplia y termina con un plan de tesina en marcha.',quote:'El auto avanza despacio. Esquiven otros autos y hagan una pausa en cada pueblo para recuperar lo aprendido.',button:'Empezar el viaje'})}
+  function move(d){if(running&&!paused)lane=Math.max(0,Math.min(2,lane+d))}function hop(){if(running&&!paused&&jump===0)jump=38}
+  document.querySelector('#mainButton').addEventListener('click',()=>{if(pendingFinish)finish();else start()});document.querySelector('#restartButton').addEventListener('click',reset);
+  addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' ','a','A','d','D','w','W','ArrowUp'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1);if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1);if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')hop()});
+  const bind=(id,fn)=>{const el=document.querySelector(id);el.addEventListener('pointerdown',e=>{e.preventDefault();fn()})};bind('#leftBtn',()=>move(-1));bind('#rightBtn',()=>move(1));bind('#jumpBtn',hop);
+  draw();
+})();
+</script>
+</body>
+</html>
+
