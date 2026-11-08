@@ -33,7 +33,7 @@
     <header><div><div class="eyebrow">Licenciatura en Tecnología Educativa · Grupo 19</div><h1>Un viaje por MITE</h1><p class="intro">Un recorrido por los aprendizajes, las preguntas y los desafíos que nos acercaron al plan de tesina.</p></div><div class="brand">Metodología de la Investigación Tecnológica Educativa</div></header>
     <section class="game" aria-label="Videojuego del recorrido de MITE">
       <canvas id="scene" width="960" height="480" aria-label="Carretera con un auto que puedes mover y obstáculos para esquivar"></canvas>
-      <div class="hud"><div><strong id="stageLabel">Preparados para salir</strong><small id="stageHint">Grupo 19 · cuatro viajeros</small><div class="progress"><i id="bar"></i></div></div><strong id="counter">Parada 0 / 5</strong></div>
+      <div class="hud"><div><strong id="stageLabel">Preparados para salir</strong><small id="stageHint">Grupo 19 · cuatro viajeros</small><div class="progress"><i id="bar"></i></div></div><strong id="counter">Parada 0 / 7</strong></div>
       <div class="town-sign" id="townSign" hidden><div class="town-board"><small>Bienvenidos al pueblo del conocimiento</small><strong id="townName">La búsqueda</strong></div></div>
       <div class="overlay" id="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><p class="eyebrow" id="dialogKicker">Un viaje de MITE</p><svg id="crashArt" class="crash-art" hidden aria-hidden="true" viewBox="0 0 120 82"><path d="M59 3 69 22 90 11 84 33 110 31 91 47 108 63 83 60 79 80 61 64 44 80 41 59 15 66 30 47 7 34 34 33 29 11 49 23Z" fill="#ffce55" stroke="#c95447" stroke-width="4" stroke-linejoin="round"/><path d="M42 54h38l-5-12-8-7H53l-7 7Z" fill="#344d56" stroke="#f9f0d7" stroke-width="2"/><path d="M52 39h13l6 7H48Z" fill="#a8d7d2"/><circle cx="52" cy="56" r="5" fill="#17252b"/><circle cx="70" cy="56" r="5" fill="#17252b"/></svg><h2 id="dialogTitle">Un viaje por MITE</h2><p id="dialogBody">Viví el recorrido del Grupo 19: esquivá los obstáculos que enfrentó durante el año y detenete en cada pueblo para descubrir qué aprendió en MITE.</p><p class="quote" id="dialogQuote">Abróchense los cinturones y prepárense para salir.</p><div class="actions"><button class="primary" id="mainButton">Empezar el viaje</button><button class="secondary" id="restartButton" hidden>Volver a empezar</button></div></div></div>
     </section>
@@ -50,7 +50,9 @@
     {place:'BÚSQUEDA CON MÉTODO',body:'El Grupo 19 eligió palabras clave, usó la búsqueda avanzada de Google Académico, revisó bibliografías de investigaciones previas y recorrió las revistas recomendadas por la cátedra. Buscar con método le ahorró muchas vueltas.',color:'#71d6c7'},
     {place:'BIBLIOGRAFÍA RECIENTE',body:'La Unidad V recomienda trabajar con investigaciones recientes y revisar, como referencia, los últimos cinco años. El Grupo 19 se llevó también la sugerencia de priorizar los últimos tres, porque en tecnología educativa el campo cambia rápido.',color:'#ffd66e'},
     {place:'INVESTIGACIÓN EN CONTEXTO',body:'En la cursada, el Grupo 19 trabajó la investigación-acción como una forma de vincular la indagación con una situación concreta e intervenir desde el rol del tecnólogo educativo. Durante este cuatrimestre avanzó con el plan; la implementación correspondía a una etapa posterior.',color:'#71d6c7'},
-    {place:'OBJETIVOS CON ALCANCE PRECISO',body:'Los objetivos expresan logros, no una lista de actividades. El verbo debe ser claro y coherente con el diseño metodológico: diseñar, implementar, comprobar e identificar expresan alcances diferentes. El Grupo 19 aprendió a elegirlo con cuidado.',color:'#ffd66e'}
+    {place:'OBJETIVOS CON ALCANCE PRECISO',body:'Los objetivos expresan logros, no una lista de actividades. El verbo debe ser claro y coherente con el diseño metodológico: diseñar, implementar, comprobar e identificar expresan alcances diferentes. El Grupo 19 aprendió a elegirlo con cuidado.',color:'#ffd66e'},
+    {place:'DECISIONES METODOLÓGICAS',body:'El Grupo 19 aprendió que el diseño metodológico articula decisiones sobre qué investigar, para qué y cómo hacerlo. El enfoque, el alcance, las estrategias y las técnicas deben guardar coherencia con el problema y los objetivos.',color:'#b8a6ff'},
+    {place:'TRABAJO DE CAMPO',body:'En la Unidad VII, el Grupo 19 trabajó técnicas para recoger información, como entrevistas, observaciones y encuestas. En el trabajo de campo, los datos se obtienen en la realidad estudiada y las técnicas se eligen según el problema y el diseño de la investigación.',color:'#71d6c7'}
   ];
   const obstacles=[
     {word:'MIEDO',message:'Aprender algo nuevo puede dar miedo. Reconocerlo, animarse a enfrentarlo y avanzar paso a paso también fue parte del recorrido del Grupo 19.',color:'#ca755f'},
@@ -111,12 +113,12 @@
     obstaclesOnRoad.forEach(o=>{const scale=.32+(o.y-280)/230*.57;const x=laneX(o.lane,o.y);car(x,o.y,scale,o.color,true);rr(x-62*scale,o.y-49*scale,124*scale,21*scale,7*scale,'#183a43');ctx.fillStyle='#fff5df';ctx.textAlign='center';ctx.font=`800 ${Math.max(8,10*scale)}px system-ui`;ctx.fillText(o.word,x,o.y-34*scale)});
     const playerY=438;const playerX=laneX(lane,playerY);car(playerX,playerY,1.29,'#d7944e',false);
     if(running&&!paused&&!finished){const now=performance.now(),dt=Math.min(40,now-last);last=now;const frame=dt/16.67;tick+=frame;stageClock+=dt;spawnClock+=dt;
-      if(!finalLeg&&spawnedThisSegment<3&&obstaclesOnRoad.length===0&&spawnClock>1850){spawnClock=0;const entry=obstacles[Math.floor(Math.random()*obstacles.length)];obstaclesOnRoad.push({lane,y:288,...entry});spawnedThisSegment++}
+      if(!finalLeg&&spawnedThisSegment<2&&obstaclesOnRoad.length===0&&spawnClock>1850){spawnClock=0;const entry=obstacles[Math.floor(Math.random()*obstacles.length)];obstaclesOnRoad.push({lane,y:288,...entry});spawnedThisSegment++}
       obstaclesOnRoad.forEach(o=>{o.y+=.72*frame;if(!o.cleared&&o.y>464){o.cleared=true;clearedThisSegment++}});
       const hit=obstaclesOnRoad.find(o=>o.lane===lane&&o.y>404&&o.y<460);if(hit){obstaclesOnRoad=obstaclesOnRoad.filter(o=>o!==hit);clearedThisSegment++;crash(hit)}
       obstaclesOnRoad=obstaclesOnRoad.filter(o=>o.y<490);
       if(!paused&&finalLeg&&stageClock>7000){stageClock=0;destination()}
-      else if(!paused&&!finalLeg&&spawnedThisSegment===3&&clearedThisSegment===3&&obstaclesOnRoad.length===0){arrive()}
+      else if(!paused&&!finalLeg&&spawnedThisSegment===2&&clearedThisSegment===2&&obstaclesOnRoad.length===0){arrive()}
     }
     requestAnimationFrame(draw)
   }
